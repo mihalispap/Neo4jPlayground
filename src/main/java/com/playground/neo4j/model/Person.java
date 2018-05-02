@@ -34,6 +34,9 @@ public class Person {
     //@JsonIgnore
     private Set<Hobby> likes;
 
+    @Relationship(type="LIKES_GRADED", direction="OUTGOING")
+    private Set<HobbyGraded> likes_graded;
+
     @Relationship(type = "LIVES_IN", direction = "OUTGOING")
     //@JsonIgnore
     private Area lives_in;
@@ -57,6 +60,12 @@ public class Person {
     public void add_hobby(Hobby h){
         likes.add(h);
         h.getLikes().add(this);
+    }
+
+    public void add_graded_hobby(Hobby h, int how_much){
+        HobbyGraded hg = new HobbyGraded(this, h, how_much);
+        likes_graded.add(hg);
+        h.getLikes_graded().add(hg);
     }
 
     public void add_lives_in(Area a){
@@ -112,6 +121,7 @@ public class Person {
 
     public Person() {
         likes = new HashSet<>();
+        likes_graded = new HashSet<>();
     }
 
     public Long getId() {
@@ -128,6 +138,14 @@ public class Person {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<HobbyGraded> getLikes_graded() {
+        return likes_graded;
+    }
+
+    public void setLikes_graded(Set<HobbyGraded> likes_graded) {
+        this.likes_graded = likes_graded;
     }
 
     @Override

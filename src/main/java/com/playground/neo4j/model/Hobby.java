@@ -26,8 +26,13 @@ public class Hobby {
     //@JsonIgnore
     private Set<Person> likes;
 
+    @Relationship(type = "LIKES_GRADED", direction = "INCOMING")
+    //@JsonIgnore
+    private Set<HobbyGraded> likes_graded;
+
     public Hobby() {
         likes = new HashSet<>();
+        likes_graded = new HashSet<>();
     }
 
     public Long getId() {
@@ -52,5 +57,13 @@ public class Hobby {
 
     public void setLikes(Set<Person> likes) {
         this.likes = likes;
+    }
+
+    public Set<HobbyGraded> getLikes_graded() {
+        return likes_graded;
+    }
+
+    public void setLikes_graded(Set<HobbyGraded> likes_graded) {
+        this.likes_graded = likes_graded;
     }
 }

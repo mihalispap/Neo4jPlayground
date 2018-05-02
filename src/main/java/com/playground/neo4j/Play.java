@@ -1,9 +1,6 @@
 package com.playground.neo4j;
 
-import com.playground.neo4j.model.Area;
-import com.playground.neo4j.model.Company;
-import com.playground.neo4j.model.Hobby;
-import com.playground.neo4j.model.Person;
+import com.playground.neo4j.model.*;
 import org.neo4j.ogm.config.Configuration;
 import org.neo4j.ogm.cypher.ComparisonOperator;
 import org.neo4j.ogm.cypher.Filter;
@@ -42,7 +39,10 @@ public class Play {
         session.deleteAll(Company.class);
         session.deleteAll(Area.class);
         session.deleteAll(Hobby.class);
+        session.deleteAll(HobbyGraded.class);
 
+
+        //if(true) System.exit(1);
         Company eurobank = new Company();
         eurobank.setCompany_name("Eurobank");
 
@@ -97,7 +97,11 @@ public class Play {
         konstantina.add_hobby(walking);
         konstantina.add_hobby(hugs);
         konstantina.add_hobby(naked);
-        konstantina.add_hobby(naked);
+
+        konstantina.add_graded_hobby(cs, 8);
+        konstantina.add_graded_hobby(walking, 8);
+        konstantina.add_graded_hobby(hugs, 10);
+        konstantina.add_graded_hobby(naked, 10);
 
         mihalis.currently_works(eurobank);
         mihalis.add_past_empolyment(foodakai);
@@ -107,6 +111,10 @@ public class Play {
         mihalis.add_hobby(panathinaikos);
         mihalis.add_hobby(cs);
         mihalis.add_hobby(naked);
+
+        mihalis.add_graded_hobby(naked, 10);
+        mihalis.add_graded_hobby(panathinaikos, 9);
+        mihalis.add_graded_hobby(cs, 8);
 
         session.save(konstantina);
         session.save(mihalis);
@@ -169,6 +177,15 @@ public class Play {
         commons="";
         for(Map<String, Object> map : res.queryResults()){
             commons+=((Company)map.entrySet().iterator().next().getValue()).getCompany_name()+", ";
+        }
+        System.out.println(commons.trim().substring(0,commons.length() - 2));
+
+        System.out.print("Topics for Discussion @next time (common hobbies graded >=9): ");
+        query = "match(n1:Person)-[r1:LIKES_GRADED]-(h:Hobby)-[r2:LIKES_GRADED]-(n2:Person) where r1.how_much>8 AND r2.how_much>8 return distinct h";
+        res=session.query(query, parameters);
+        commons="";
+        for(Map<String, Object> map : res.queryResults()){
+            commons+=((Hobby)map.entrySet().iterator().next().getValue()).getName()+", ";
         }
         System.out.println(commons.trim().substring(0,commons.length() - 2));
 
